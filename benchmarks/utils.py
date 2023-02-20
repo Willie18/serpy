@@ -1,6 +1,7 @@
 from rest_framework import serializers as rf_serializers
 import serpy
 import time
+import marshmallow
 
 
 class Obj(object):
@@ -45,7 +46,10 @@ def benchmark(serializer_fn, repetitions, num_objs=1, data=None):
 
     t1 = time.time()
     for i in range(repetitions):
-        serializer_fn(objs, many=many).data
+        if library == "Marshmallow":
+            serializer_fn(objs, many=many)
+        else:
+            serializer_fn(objs, many=many).data
     total_time = time.time() - t1
     print('Total time: {}'.format(total_time))
     print('Objs/s    : {}\n'.format(int(total_objs / total_time)))

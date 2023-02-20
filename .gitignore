@@ -44,3 +44,4 @@ docs/_build/
 
 # Vim swap files
 *.swp
+venv/

@@ -1,10 +1,13 @@
 from serpy.fields import Field
 import operator
-import six
 
 
 class SerializerBase(Field):
     _field_map = {}
+
+     # Allow type checkers to make serializers generic.
+    def __class_getitem__(cls, *args, **kwargs):
+        return cls
 
 
 def _compile_field_to_tuple(field, name, serializer_cls):
@@ -64,7 +67,7 @@ class SerializerMeta(type):
         return real_cls
 
 
-class Serializer(six.with_metaclass(SerializerMeta, SerializerBase)):
+class Serializer(SerializerBase, metaclass=SerializerMeta):
     """:class:`Serializer` is used as a base for custom serializers.
 
     The :class:`Serializer` class is also a subclass of :class:`Field`, and can
@@ -161,3 +164,8 @@ class DictSerializer(Serializer):
         # {'foo': 5, 'bar': 2.2}
     """
     default_getter = operator.itemgetter
+
+
+class LazyModelSerializer:
+   def __new__(cls: type[Self]) -> Self:
+       pass

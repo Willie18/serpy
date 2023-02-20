@@ -1,8 +1,9 @@
-from .obj import Obj
 from serpy.fields import (
-    Field, MethodField, BoolField, IntField, FloatField, StrField)
-import unittest
+    Field, MethodField, BoolField, IntField, FloatField, StrField, DatetimeField)
 
+from obj import Obj
+
+import unittest
 
 class TestFields(unittest.TestCase):
 
@@ -70,6 +71,31 @@ class TestFields(unittest.TestCase):
     def test_field_label(self):
         field1 = StrField(label="@id")
         self.assertEqual(field1.label, "@id")
+
+    
+    def test_datetime_field(self):
+        # Test with no format specified
+        datetime_str = "2022-01-01T12:00:00Z"
+        expected_isoformat = '2022-01-01T12:00:00+00:00'
+        result = DatetimeField().to_value(datetime_str)
+        self.assertEqual(result, expected_isoformat)
+
+        # Test with custom format
+        expected_custom_format = '01/01/2022 12:00 PM'
+        custom_format = "%m/%d/%Y %I:%M %p"
+        result = DatetimeField(format=custom_format).to_value(datetime_str)
+        self.assertEqual(result, expected_custom_format)
+
+        # Test with invalid value
+        datetime_str = "invalid datetime"
+        result = DatetimeField().to_value(datetime_str)
+        self.assertEqual(result, 'invalid datetime')
+
+        # Test with None
+        datetime_str = None
+        result = DatetimeField().to_value(datetime_str)
+        self.assertIsNone(result)
+
 
 
 if __name__ == '__main__':

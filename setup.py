@@ -16,7 +16,6 @@ setup(
     author='Clark DuVall',
     author_email='clark.duvall@gmail.com',
     license='MIT',
-    install_requires=['six'],
     test_suite='tests',
     classifiers=[
         'Development Status :: 4 - Beta',

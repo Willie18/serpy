@@ -1,8 +1,8 @@
-from django.conf import settings
-settings.configure()
+# from django.conf import settings
+# settings.configure()
 
-import django
-django.setup()
+# import django
+# django.setup()
 
 from rest_framework import serializers as rf_serializers
 from utils import write_csv

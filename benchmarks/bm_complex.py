@@ -1,16 +1,20 @@
 from django.conf import settings
 settings.configure()
 
-import django
-django.setup()
+import datetime
 
+# import django
+# django.setup()
 from rest_framework import serializers as rf_serializers
 from utils import write_csv
 import marshmallow
 import serpy
 
+datetime_format= "%m/%d/%Y %I:%M %p"
+
 
 class SubRF(rf_serializers.Serializer):
+    v = rf_serializers.DateTimeField(format=datetime_format)
     w = rf_serializers.FloatField()
     x = rf_serializers.SerializerMethodField()
     y = rf_serializers.CharField()
@@ -28,6 +32,7 @@ class ComplexRF(rf_serializers.Serializer):
 
 
 class SubM(marshmallow.Schema):
+    v = marshmallow.fields.DateTime(format=datetime_format)
     w = marshmallow.fields.Int()
     x = marshmallow.fields.Method('get_x')
     y = marshmallow.fields.Str()
@@ -51,6 +56,7 @@ class ComplexM(marshmallow.Schema):
 
 
 class SubS(serpy.Serializer):
+    v = serpy.DatetimeField()
     w = serpy.IntField()
     x = serpy.MethodField()
     y = serpy.StrField()
@@ -72,12 +78,14 @@ if __name__ == '__main__':
         'foo': 'bar',
         'bar': lambda: 5,
         'sub': {
+            'v': datetime.datetime.now(),
             'w': 1000,
             'x': 20,
             'y': 'hello',
             'z': 10
         },
         'subs': [{
+            'v':datetime.datetime.now(),
             'w': 1000 * i,
             'x': 20 * i,
             'y': 'hello' * i,

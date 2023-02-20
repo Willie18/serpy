@@ -1,6 +1,8 @@
-import six
 import types
+import contextlib
+from datetime import datetime
 
+DEFAULT_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
 class Field(object):
     """:class:`Field` is used to define what attributes will be serialized.
@@ -78,7 +80,7 @@ class Field(object):
 
 class StrField(Field):
     """A :class:`Field` that converts the value to a string."""
-    to_value = staticmethod(six.text_type)
+    to_value = staticmethod(str)
 
 
 class IntField(Field):
@@ -130,3 +132,23 @@ class MethodField(Field):
         if method_name is None:
             method_name = 'get_{0}'.format(serializer_field_name)
         return getattr(serializer_cls, method_name)
+
+
+
+class DatetimeField(Field):
+   # todo add support for timezones
+    def __init__(self,format=None, **kwargs):
+        self.format = format or DEFAULT_FORMAT
+        super().__init__(**kwargs)
+
+    def to_value(self, value):
+        if value is None:
+            return None
+
+        if isinstance(value, str):
+            return value
+
+        with contextlib.suppress(ValueError):
+            # dt = self.date_formatter(value, self.format)
+            return value.strftime(self.format)
+        return value
